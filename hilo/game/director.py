@@ -1,2 +1,2 @@
-""" This is the class for director.
+""" conflict test line
 """
