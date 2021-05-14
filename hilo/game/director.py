@@ -27,10 +27,39 @@ class Director:
             self (Director): an instance of Director.
         """
         while self.keep_playing:
-            self.get_inputs()
-            self.do_updates()
+            current_card = self.dealer.get_nextCard()
+            print(f"The card is: {current_card}")
+            hl_inputs = self.get_inputs()
+            next_card = self.dealer.get_nextCard()
+            print(f"Next card was: {next_card}")
+            higher = self.isHigher(current_card, next_card)
+            isCorrect = self.is_correct(hl_inputs, higher)
+            self.do_updates(isCorrect)
             self.do_outputs()
+            self.keepPlaying()
+            
+    def keepPlaying(self):
+        if self.score <= 0:
+            self.keep_playing = False
+        else:
+            userInput = input("Keep playing? [y/n] ")
+            if userInput == 'y':
+                self.keep_playing = True
+            else:
+                self.keep_playing = False
 
+
+
+    def is_correct(self, hl_inputs, higher):
+        if hl_inputs == 'h' and higher:
+            return True
+        elif hl_inputs == 'h' and not higher:
+            return False
+        elif hl_inputs == 'l' and higher:
+            return False
+        elif hl_inputs == 'l' and not higher:
+            return True
+        
     def get_inputs(self):
         """Gets the inputs at the beginning of each round of play. In this case,
         that means showing the card.
@@ -38,9 +67,17 @@ class Director:
         Args:
             self (Director): An instance of Director.
         """
-        self.dealer.display_card()
+        userInput = input("Higher or lower? [h/l]")
+        return userInput
 
-    def do_updates(self):
+    def isHigher(self, current_card, next_card):
+        if current_card < next_card:
+            status = True
+        elif current_card >= next_card:
+            status = False
+        return status
+
+    def do_updates(self, isCorrect):
         """Updates the important game information for each round of play. In 
         this case, that means updating the score.
 
@@ -48,6 +85,10 @@ class Director:
             self (Director): An instance of Director.
         """
         # Calculate the score
+        if isCorrect == True:
+            self.score += 100
+        elif isCorrect == False:
+            self.score -= 75
 
     def do_outputs(self):
         """Outputs the important game information for each round of play. In 
@@ -56,14 +97,4 @@ class Director:
         Args:
             self (Director): An instance of Director.
         """
-        print(f"\nYou rolled: {self.dealer.card}")
-        # This needs higher and lower 
-        
-        print(f"Next card was: {self.dealer.next_card}")
         print(f"Your score is: {self.score}")
-        
-        if self.dealer.can_throw():
-            choice = input("Keep playing? [y/n] ")
-            self.keep_playing = (choice == "y")
-        else:
-            self.keep_playing = False
