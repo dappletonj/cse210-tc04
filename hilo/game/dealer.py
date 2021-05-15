@@ -3,6 +3,9 @@ import random
 class Dealer:
     """A code template for a person who deals a card. The responsibility of this 
     class of objects is to pick the cards to show the player.
+
+    Attributes:
+        cards (list): A list of numbers 1 through 13 representing the card values.
     """
     def __init__(self):
         """The class constructor.
